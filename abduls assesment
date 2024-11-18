@@ -1,0 +1,141 @@
+menu_items = [
+    ["Burger", False, 0, 3, "Main Course", "A juicy beef patty with lettuce, tomato, and cheese."],
+    ["Pizza", True, 0, 3, "Main Course", "Classic margherita pizza with fresh tomatoes and mozzarella."],
+    ["Pasta", True, 0, 2, "Main Course", "Creamy penne pasta with a garlic and herb sauce."],
+    ["Salad", True, 0, 2, "Appetizer", "Fresh garden salad with a variety of seasonal veggies."],
+    ["Fries", True, 0, 2, "Appetizer", "Crispy golden fries served with a side of ketchup."],
+    ["Sandwich", True, 0, 2, "Main Course", "A freshly made sandwich with vegetables and cheese."],
+    ["Sushi", False, 0, 2, "Main Course", "Assorted sushi rolls with soy sauce and wasabi."],
+    ["Tacos", False, 0, 2, "Main Course", "Spicy beef tacos with salsa and guacamole."],
+    ["Panini", False, 0, 3, "Main Course", "Grilled panini with ham, cheese, and fresh basil."],
+    ["Ice Cream", True, 0, 2, "Dessert", "Creamy vanilla ice cream with a chocolate drizzle."],
+    ["Steak", False, 0, 5, "Main Course", "Grilled steak cooked to perfection with herbs."],
+    ["Chicken Wings", False, 0, 2, "Appetizer", "Spicy chicken wings served with blue cheese dip."],
+    ["Fish and Chips", False, 0, 5, "Main Course", "Crispy battered fish served with fries and tartar sauce."],
+    ["Smoothie", True, 0, 2, "Beverage", "A refreshing blend of fruits and yogurt."],
+    ["Coffee", True, 0, 2, "Beverage", "Freshly brewed coffee to start your day right."],
+    ["Tea", True, 0, 2, "Beverage", "A soothing cup of hot tea with optional milk and sugar."],
+    ["Cake", True, 0, 2, "Dessert", "Moist chocolate cake with a rich frosting."],
+    ["Donut", True, 0, 2, "Dessert", "Sweet glazed donut with a hint of cinnamon."],
+    ["Fried Rice", False, 0, 2, "Main Course", "Stir-fried rice with vegetables and soy sauce."],
+    ["Spring Rolls", True, 0, 2, "Appetizer",
+     "Crispy spring rolls filled with veggies and served with a sweet chili dip."]
+]
+
+
+
+def display_menu():
+    print("\n--- Abduls Food Ordering System ---")
+    print("1. View Available Vegetarian Food")
+    print("2. View Available Non-Vegetarian Food")
+    print("3. View by Category")
+    print("4. Order Food")
+    print("5. Cancel Order")
+    print("6. Exit and View Total Cost")
+
+
+
+def view_available_food(vegetarian=True):
+    category = "Vegetarian" if vegetarian else "Non-Vegetarian"
+    print(f"\nAvailable {category} Food Items:")
+    available = False
+    for item in menu_items:
+        if item[1] == vegetarian and item[2] == 0:  # Not ordered yet
+            print(f"- {item[0]} (£{item[3]}): {item[5]}")
+            available = True
+    if not available:
+        print(f"No {category} food items available.")
+
+
+
+def view_by_category():
+    category_choice = input("Enter the category (Appetizer, Main Course, Dessert, Beverage): ").strip()
+    print(f"\nAvailable {category_choice} Items:")
+    available = False
+    for item in menu_items:
+        if item[4].lower() == category_choice.lower() and item[2] == 0:
+            print(f"- {item[0]} (£{item[3]}): {item[5]}")
+            available = True
+    if not available:
+        print(f"No items available in {category_choice}.")
+
+
+
+def order_food():
+    food_name = input("Enter the name of the food you want to order: ").strip()
+    found = False
+    for item in menu_items:
+        if food_name.lower() == item[0].lower():
+            found = True
+            if item[2] == 0:
+                quantity = int(input(f"How many {food_name}s would you like to order? "))
+                item[2] = quantity
+                print(f"You have ordered {quantity} {food_name}(s) for £{item[3] * quantity}.")
+            else:
+                print(f"'{food_name}' is already ordered.")
+            break
+    if not found:
+        print("Food item not found.")
+
+
+
+def cancel_order():
+    food_name = input("Enter the name of the food you want to cancel: ").strip()
+    found = False
+    for item in menu_items:
+        if food_name.lower() == item[0].lower():
+            found = True
+            if item[2] > 0:
+                item[2] = 0
+                print(f"You have cancelled the order for '{food_name}'.")
+            else:
+                print(f"'{food_name}' was not ordered.")
+            break
+    if not found:
+        print("Food item not found.")
+
+
+
+def calculate_total_cost():
+    total_cost = 0
+    for item in menu_items:
+        if item[2] > 0:  # If item is ordered (quantity > 0)
+            total_cost += item[3] * item[2]  # Multiply price by quantity
+    return total_cost
+
+
+
+def view_order_summary():
+    print("\nYour Current Order:")
+    ordered_items = False
+    for item in menu_items:
+        if item[2] > 0:
+            print(f"{item[2]}x {item[0]} (£{item[3] * item[2]}): {item[5]}")
+            ordered_items = True
+    if not ordered_items:
+        print("No items ordered yet.")
+
+
+
+while True:
+    display_menu()
+    choice = input("Enter your choice: ")
+
+    if choice == '1':
+        view_available_food(vegetarian=True)
+    elif choice == '2':
+        view_available_food(vegetarian=False)
+    elif choice == '3':
+        view_by_category()
+    elif choice == '4':
+        order_food()
+    elif choice == '5':
+        cancel_order()
+    elif choice == '6':
+        view_order_summary()
+        total_cost = calculate_total_cost()
+        print(f"Your total cost is: £{total_cost}.")
+        print("Thank you for using Abduls Bistro!")
+        break
+    else:
+        print("Invalid choice.")
